@@ -1,41 +1,38 @@
-const path = require("path");
-const slsw = require("serverless-webpack");
-const nodeExternals = require("webpack-node-externals");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require('path');
+const slsw = require('serverless-webpack');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   context: __dirname,
-  mode: slsw.lib.webpack.isLocal ? "development" : "production",
+  mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   entry: slsw.lib.entries,
-  devtool: slsw.lib.webpack.isLocal
-    ? "eval-cheap-module-source-map"
-    : "source-map",
+  devtool: slsw.lib.webpack.isLocal ? 'eval-cheap-module-source-map' : 'source-map',
   resolve: {
-    extensions: [".mjs", ".json", ".ts", ".html", ".png"],
+    extensions: ['.mjs', '.json', '.ts', '.html', '.png'],
     symlinks: false,
     cacheWithContext: false,
   },
   output: {
-    libraryTarget: "commonjs",
-    path: path.join(__dirname, ".webpack"),
-    filename: "[name].js",
+    libraryTarget: 'commonjs',
+    path: path.join(__dirname, '.webpack'),
+    filename: '[name].js',
   },
   optimization: {
     concatenateModules: false,
   },
-  target: "node",
+  target: 'node',
   externals: [nodeExternals()],
   module: {
     rules: [
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
       {
         test: /\.(tsx?)$/,
-        loader: "ts-loader",
+        loader: 'ts-loader',
         exclude: [
           [
-            path.resolve(__dirname, "node_modules"),
-            path.resolve(__dirname, ".serverless"),
-            path.resolve(__dirname, ".webpack"),
+            path.resolve(__dirname, 'node_modules'),
+            path.resolve(__dirname, '.serverless'),
+            path.resolve(__dirname, '.webpack'),
           ],
         ],
         options: {
@@ -47,20 +44,10 @@ module.exports = {
         test: /\.(jpg|png)$/,
         use: [
           {
-            loader: "file-loader",
+            loader: 'file-loader',
           },
         ],
       },
     ],
   },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: "./src/templates",
-          to: path.join(__dirname, ".webpack/service/src/templates"),
-        },
-      ],
-    }),
-  ],
 };
