@@ -4,6 +4,7 @@ import handlebars from "handlebars";
 import path from "path";
 import { document } from "../utils/dynamodbClient";
 import dayjs from "dayjs";
+import { S3 } from "aws-sdk";
 
 interface ICreateCertificate {
   id: string;
@@ -84,6 +85,18 @@ export const handle = async (event) => {
   await browser.close();
 
   // salvar no s3
+
+  const s3 = new S3();
+
+  await s3
+    .putObject({
+      Bucket: "serverlessignitecertificateandrei",
+      Key: `${id}.pdf`,
+      ACL: "public-read",
+      Body: pdf,
+      ContentType: "application/pdf",
+    })
+    .promise();
 
   return {
     statusCode: 201,
